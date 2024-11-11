@@ -4,11 +4,14 @@ import ButtonContainer from "./components/ButtonContainer/ButtonContainer";
 import useDesktopResize from "./hooks/useDesktopResize";
 import NextArea from "./components/NextArea/NextArea";
 import { getBoardSizeByResolution } from "./utils/boardUtils";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setSize } from "./features/board/boardSlice";
+import { selectBoardReady } from "./features/board/boardSelector";
+import { startGame } from "./features/game/gameSlice";
 
 const App = () => {
   const [sizeDetected, setSizeDetected] = useState<boolean>(false);
+  const boardReady = useSelector(selectBoardReady);
   const desktopSize = useDesktopResize();
   const dispatch = useDispatch();
 
@@ -24,11 +27,12 @@ const App = () => {
     <main className="flex justify-center items-center w-screen h-screen">
       <section className="flex flex-col">
         <div className="flex gap-4 justify-center">
-          <Board />
+          {boardReady && <Board />}
           <NextArea />
         </div>
         <div>
           <ButtonContainer />
+          <button onClick={() => dispatch(startGame())}>Temporal Start</button>
         </div>
       </section>
     </main>

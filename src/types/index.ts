@@ -3,6 +3,8 @@ export type Size = {
   cols: number;
 };
 
+export type BoardContent = (Shape | "")[][];
+
 // 1 represents color and the order is up down, next column, up down...
 export enum Shape {
   I = "01010101",
