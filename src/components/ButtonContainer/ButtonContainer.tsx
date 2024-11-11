@@ -36,7 +36,7 @@ const ButtonContainer = () => {
       <article className="flex gap-5">
         {[180, 90, 0].map((angle, i) => (
           <button
-            key={i}
+            key={angle}
             className="border-2 border-blue-400 rounded-xl h-14 w-16 sm:h-12 sm:w-16 flex justify-center items-center"
           >
             <Arrow angle={angle} />
