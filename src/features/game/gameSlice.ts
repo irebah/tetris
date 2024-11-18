@@ -1,18 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ShapeI, ShapeJ, ShapeO, TetrisPiece } from "../../types";
 
 interface GameState {
   isGameRunning: boolean;
   showGameOverScreen: boolean;
   speed: number;
-  nextTetroids?: [TetrisPiece, TetrisPiece, TetrisPiece];
 }
 
 const initialState: GameState = {
   isGameRunning: false,
   showGameOverScreen: false,
-  speed: 500,
-  nextTetroids: [{ shape: ShapeI }, { shape: ShapeJ }, { shape: ShapeO }],
+  speed: 300,
 };
 
 const gameStateSlice = createSlice({

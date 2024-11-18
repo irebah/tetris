@@ -8,10 +8,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSize } from "./features/board/boardSlice";
 import { selectBoardReady } from "./features/board/boardSelector";
 import { startGame } from "./features/game/gameSlice";
+import { selectNextTetroids } from "./features/pieceLoader/pieceLoaderSelector";
 
 const App = () => {
   const [sizeDetected, setSizeDetected] = useState<boolean>(false);
   const boardReady = useSelector(selectBoardReady);
+  const nextTetroids = useSelector(selectNextTetroids);
   const desktopSize = useDesktopResize();
   const dispatch = useDispatch();
 
@@ -28,7 +30,7 @@ const App = () => {
       <section className="flex flex-col">
         <div className="flex gap-4 justify-center">
           {boardReady && <Board />}
-          <NextArea />
+          {nextTetroids && <NextArea />}
         </div>
         <div>
           <ButtonContainer />

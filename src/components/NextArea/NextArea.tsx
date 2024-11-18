@@ -6,7 +6,7 @@ const NextArea = () => {
   const nextTetroids = useSelector(selectNextTetroids);
 
   return (
-    <section className="bg-blue-400/10 text-center rounded-xl p-2 pb-4 h-fit">
+    <section className="bg-blue-400/10 text-center rounded-xl p-2 pb-4 h-fit w-20">
       <p className="pb-4 text-xl">Next</p>
       <article className="flex flex-col gap-10 items-center">
         {nextTetroids &&

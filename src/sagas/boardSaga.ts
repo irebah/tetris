@@ -1,5 +1,4 @@
-import { put, call, select, take } from "redux-saga/effects";
-import { startGame, stopGame } from "../features/game/gameSlice";
+import { put, call, select } from "redux-saga/effects";
 import { selectGameSpeed, selectIsGameRunning } from "../features/game/gameSelector";
 import { BoardContent, TetrisPiece } from "../types";
 import { updateBoardContent, updatePositionActiveTetroid } from "../features/board/boardSlice";
@@ -16,6 +15,8 @@ function* moveActiveTetroid() {
   const boardContent: BoardContent = yield select(selectBoardContent);
   const activeTetroid: TetrisPiece = yield select(selectActiveTetroid);
 
+  if (!activeTetroid) return;
+
   const maxRow = activeTetroid.shape.length;
   const maxColumn = activeTetroid.shape[0].length;
 
@@ -27,8 +28,10 @@ function* moveActiveTetroid() {
   for (let row = 0; row < maxRow; row++) {
     for (let column = 0; column < maxColumn; column++) {
       if (
-        boardContent[row + offsetY][column + offsetX] !== "" ||
-        row + offsetY === boardContent.length - 1
+        row + offsetY + 1 >= 0 &&
+        row + offsetY + 1 <= boardContent.length &&
+        (row + offsetY + 1 === boardContent.length ||
+          boardContent[row + offsetY + 1][column + offsetX] !== "")
       ) {
         collision = true;
       }
@@ -52,7 +55,7 @@ function* updateBoardLoop() {
     yield call(requestAnimationFrameDelay);
 
     const isGameRunning: boolean = yield select(selectIsGameRunning);
-    if (!isGameRunning) return;
+    if (!isGameRunning) continue;
 
     const speed: number = yield select(selectGameSpeed);
 
@@ -68,11 +71,5 @@ function* updateBoardLoop() {
 }
 
 export function* watchRefreshBoard() {
-  while (true) {
-    yield take(startGame.type);
-
-    yield call(updateBoardLoop);
-
-    yield take(stopGame.type);
-  }
+  yield call(updateBoardLoop);
 }

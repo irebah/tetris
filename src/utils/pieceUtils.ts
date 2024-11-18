@@ -16,3 +16,11 @@ export const getColorByShape = (shape: Shape): Color | null => {
       return null;
   }
 };
+
+export const getRandomTetroidShape = (): Shape => {
+  const possibleShapes = [ShapeI, ShapeO, ShapeT, ShapeS, ShapeZ, ShapeJ, ShapeL];
+
+  const randomIndex = Math.round(Math.random() * possibleShapes.length);
+
+  return possibleShapes[randomIndex];
+};

@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { BoardContent, Shape, ShapeL, Size, TetrisPiece } from "../../types";
+import { BoardContent, Size, TetrisPiece } from "../../types";
 import { BOARD_COLS_SM, BOARD_ROWS_SM } from "../../constants";
 import { getColorByShape } from "../../utils/pieceUtils";
 
@@ -18,13 +18,6 @@ const initialState: BoardState = {
     cols: BOARD_COLS_SM,
   },
   content: [[]],
-  activeTetroid: {
-    shape: ShapeL,
-    position: {
-      x: 3,
-      y: 7,
-    },
-  },
 };
 
 export const boardSlice = createSlice({
@@ -42,16 +35,16 @@ export const boardSlice = createSlice({
       action.payload.shape.forEach((row, rowIndex) => {
         row.forEach((cell, columnIndex) => {
           if (cell === "1") {
-            state.content[rowIndex + (action.payload.position?.y || 0)][
-              columnIndex + (action.payload.position?.x || 0)
-            ] = getColorByShape(action.payload.shape) ?? "";
+            const effectiveRow = rowIndex + (action.payload.position?.y || 0);
+            const effectiveColumn = columnIndex + (action.payload.position?.x || 0);
+            state.content[effectiveRow][effectiveColumn] =
+              getColorByShape(action.payload.shape) ?? "";
           }
         });
       });
     },
     updatePositionActiveTetroid: (state) => {
-      console.log("update", getColorByShape(state.activeTetroid?.shape as Shape));
-      if (state.activeTetroid && state.activeTetroid.position?.y) {
+      if (state.activeTetroid && state.activeTetroid.position?.y != undefined) {
         state.activeTetroid.position.y = state.activeTetroid.position.y + 1;
       }
     },

@@ -1,13 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ShapeI, ShapeJ, ShapeO, TetrisPiece } from "../../types";
+import { TetrisPiece } from "../../types";
 
 interface PieceLoaderState {
   nextTetroids?: [TetrisPiece, TetrisPiece, TetrisPiece];
 }
 
-const initialState: PieceLoaderState = {
-  nextTetroids: [{ shape: ShapeI }, { shape: ShapeJ }, { shape: ShapeO }],
-};
+const initialState: PieceLoaderState = {};
 
 const pieceLoaderStateSlice = createSlice({
   name: "pieceLoader",
