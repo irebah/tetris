@@ -1,9 +1,10 @@
 import { put, call, select, take } from "redux-saga/effects";
 import { startGame, stopGame } from "../features/game/gameSlice";
 import { selectGameSpeed, selectIsGameRunning } from "../features/game/gameSelector";
-import { BoardContent, Shape } from "../types";
-import { updateBoardContent } from "../features/board/boardSlice";
-import { selectBoardContent } from "../features/board/boardSelector";
+import { BoardContent, TetrisPiece } from "../types";
+import { updateBoardContent, updatePositionActiveTetroid } from "../features/board/boardSlice";
+import { selectActiveTetroid, selectBoardContent } from "../features/board/boardSelector";
+import { loadNextPiece } from "../features/pieceLoader/pieceLoaderSlice";
 
 const requestAnimationFrameDelay = () => {
   return new Promise<void>((resolve) => {
@@ -11,43 +12,37 @@ const requestAnimationFrameDelay = () => {
   });
 };
 
-const updateTableContent = (
-  table: BoardContent,
-  rowIndex: number,
-  colIndex: number,
-  newValue: Shape
-): BoardContent => {
-  // Create the updated row by combining parts of the old row with the new value at colIndex
-  const updatedRow = [
-    ...table[rowIndex].slice(0, colIndex), // The part of the row before the index
-    newValue, // The new value to be inserted
-    ...table[rowIndex].slice(colIndex + 1), // The part of the row after the index
-  ];
-
-  // Return a new table with the updated row
-  return [
-    ...table.slice(0, rowIndex), // The rows before the updated row
-    updatedRow, // The updated row
-    ...table.slice(rowIndex + 1), // The rows after the updated row
-  ];
-};
-
-function* applyGravity() {
+function* moveActiveTetroid() {
   const boardContent: BoardContent = yield select(selectBoardContent);
+  const activeTetroid: TetrisPiece = yield select(selectActiveTetroid);
 
-  const updatedBoardContent = updateTableContent(boardContent, 5, 5, Shape.L);
+  const maxRow = activeTetroid.shape.length;
+  const maxColumn = activeTetroid.shape[0].length;
 
-  yield put(updateBoardContent(updatedBoardContent));
+  const offsetX = activeTetroid.position?.x || 0;
+  const offsetY = activeTetroid.position?.y || 0;
+
+  let collision = false;
+
+  for (let row = 0; row < maxRow; row++) {
+    for (let column = 0; column < maxColumn; column++) {
+      if (
+        boardContent[row + offsetY][column + offsetX] !== "" ||
+        row + offsetY === boardContent.length - 1
+      ) {
+        collision = true;
+      }
+    }
+  }
+
+  if (!collision) {
+    yield put(updatePositionActiveTetroid());
+  } else {
+    yield put(updateBoardContent(activeTetroid));
+    yield put(loadNextPiece());
+  }
+
   console.log("Board updated!");
-}
-
-function* checkFullRows() {
-  const boardContent: BoardContent = yield select(selectBoardContent);
-
-  const updatedBoardContent = updateTableContent(boardContent, 5, 5, Shape.L);
-
-  yield put(updateBoardContent(updatedBoardContent));
-  console.log("Check if there is any complete row");
 }
 
 function* updateBoardLoop() {
@@ -65,8 +60,8 @@ function* updateBoardLoop() {
     const elapsedTime = currentTime - lastTime;
 
     if (elapsedTime >= speed || lastTime === 0) {
-      yield call(applyGravity);
-      yield call(checkFullRows);
+      yield call(moveActiveTetroid);
+
       lastTime = currentTime;
     }
   }

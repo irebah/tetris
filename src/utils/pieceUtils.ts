@@ -1,16 +1,18 @@
-import { Color, Shape } from "../types";
+import { Color, Shape, ShapeI, ShapeJ, ShapeL, ShapeO, ShapeS, ShapeT, ShapeZ } from "../types";
 
-export const getColorByShape = (shape: Shape): Color => {
+export const getColorByShape = (shape: Shape): Color | null => {
   switch (shape) {
-    case Shape.I:
-    case Shape.O:
+    case ShapeI:
+    case ShapeO:
       return Color.green;
-    case Shape.T:
-    case Shape.S:
+    case ShapeT:
+    case ShapeS:
       return Color.blue;
-    case Shape.Z:
-    case Shape.J:
-    case Shape.L:
+    case ShapeZ:
+    case ShapeJ:
+    case ShapeL:
       return Color.red;
+    default:
+      return null;
   }
 };

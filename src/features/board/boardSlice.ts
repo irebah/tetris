@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { BoardContent, Size } from "../../types";
+import { BoardContent, Shape, ShapeL, Size, TetrisPiece } from "../../types";
 import { BOARD_COLS_SM, BOARD_ROWS_SM } from "../../constants";
+import { getColorByShape } from "../../utils/pieceUtils";
 
 interface BoardState {
   ready: boolean;
   size: Size;
   content: BoardContent;
+  activeTetroid?: TetrisPiece;
 }
 
 const initialState: BoardState = {
@@ -16,6 +18,13 @@ const initialState: BoardState = {
     cols: BOARD_COLS_SM,
   },
   content: [[]],
+  activeTetroid: {
+    shape: ShapeL,
+    position: {
+      x: 3,
+      y: 7,
+    },
+  },
 };
 
 export const boardSlice = createSlice({
@@ -29,12 +38,30 @@ export const boardSlice = createSlice({
         Array(action.payload.cols).fill("")
       );
     },
-    updateBoardContent: (state, action: PayloadAction<BoardContent>) => {
-      state.content = action.payload;
+    updateBoardContent: (state, action: PayloadAction<TetrisPiece>) => {
+      action.payload.shape.forEach((row, rowIndex) => {
+        row.forEach((cell, columnIndex) => {
+          if (cell === "1") {
+            state.content[rowIndex + (action.payload.position?.y || 0)][
+              columnIndex + (action.payload.position?.x || 0)
+            ] = getColorByShape(action.payload.shape) ?? "";
+          }
+        });
+      });
+    },
+    updatePositionActiveTetroid: (state) => {
+      console.log("update", getColorByShape(state.activeTetroid?.shape as Shape));
+      if (state.activeTetroid && state.activeTetroid.position?.y) {
+        state.activeTetroid.position.y = state.activeTetroid.position.y + 1;
+      }
+    },
+    setActiveTetroid: (state, action: PayloadAction<TetrisPiece>) => {
+      state.activeTetroid = action.payload;
     },
   },
 });
 
-export const { setSize, updateBoardContent } = boardSlice.actions;
+export const { setSize, updateBoardContent, updatePositionActiveTetroid, setActiveTetroid } =
+  boardSlice.actions;
 
 export default boardSlice.reducer;

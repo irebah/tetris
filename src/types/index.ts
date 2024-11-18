@@ -3,18 +3,41 @@ export type Size = {
   cols: number;
 };
 
-export type BoardContent = (Shape | "")[][];
+export type Position = {
+  x: number;
+  y: number;
+};
+
+export type BoardContent = (Color | "")[][];
 
 // 1 represents color and the order is up down, next column, up down...
-export enum Shape {
-  I = "01010101",
-  O = "1111",
-  T = "011101",
-  S = "011110",
-  Z = "101101",
-  J = "110101",
-  L = "010111",
-}
+export type Shape = Array<Array<string>>;
+
+export const ShapeI: Shape = [["1", "1", "1", "1"]];
+export const ShapeO: Shape = [
+  ["1", "1"],
+  ["1", "1"],
+];
+export const ShapeT: Shape = [
+  ["0", "1", "0"],
+  ["1", "1", "1"],
+];
+export const ShapeS: Shape = [
+  ["0", "1", "1"],
+  ["1", "1", "0"],
+];
+export const ShapeZ: Shape = [
+  ["1", "1", "0"],
+  ["0", "1", "1"],
+];
+export const ShapeJ: Shape = [
+  ["1", "0", "0"],
+  ["1", "1", "1"],
+];
+export const ShapeL: Shape = [
+  ["0", "0", "1"],
+  ["1", "1", "1"],
+];
 
 export enum Color {
   red = "bg-red-400 border-red-700",
@@ -24,4 +47,5 @@ export enum Color {
 
 export type TetrisPiece = {
   shape: Shape;
+  position?: Position;
 };

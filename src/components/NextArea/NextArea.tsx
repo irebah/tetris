@@ -1,16 +1,16 @@
-import { Shape } from "../../types";
+import { useSelector } from "react-redux";
+import { selectNextTetroids } from "../../features/pieceLoader/pieceLoaderSelector";
 import Piece from "../Piece/Piece";
 
 const NextArea = () => {
-  const nextShapes: Array<Shape> = [Shape.I, Shape.O, Shape.T, Shape.S, Shape.Z, Shape.J, Shape.L];
+  const nextTetroids = useSelector(selectNextTetroids);
 
   return (
-    <section className="bg-blue-400/10 text-center rounded-xl p-2">
+    <section className="bg-blue-400/10 text-center rounded-xl p-2 pb-4 h-fit">
       <p className="pb-4 text-xl">Next</p>
       <article className="flex flex-col gap-10 items-center">
-        {nextShapes.map((shape) => (
-          <Piece key={`next-${shape}`} shape={shape} />
-        ))}
+        {nextTetroids &&
+          nextTetroids.map((tetroid, index) => <Piece key={`next-${index}`} tetroid={tetroid} />)}
       </article>
     </section>
   );
